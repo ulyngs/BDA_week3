@@ -1,15 +1,14 @@
 ---
 title: "Big Data Analytics Week 3"
-author: "Bertie Vidgen"
-date: "02/02/2019"
+author: "Ulrik Lyngs (based on Bertie Vidgen's materials)"
+date: "2020-02-17"
 output: html_document
 ---
 
 # BDA Week 3 notes
-In the first half of the lecture we look at how to plot two variables together, using some extensions on the scatterplot. We then look at how to plot error bars, using the 'error_bars()' command from the 'rBDA' package. In the second half we look at how to model non-linear relationships in bivariate data, using LOESS curves and logarithms.
+In the first half of the lecture we look at how to plot two variables together, using some extensions to a scatterplot. We then look at how to plot error bars, using the 'error_bars()' command from the 'rBDA' package. In the second half we look at how to model non-linear relationships in bivariate data, using LOESS curves and logarithms.
 
-This week is more technically demanding than the last two - if you have any issues, please shoot me an email at bertievidgen@gmail.com
-
+This week is more technically demanding than the last two - if you have any issues, please shoot me an email at ulrik.lyngs@cs.ox.ac.uk.
 
 Set up the R workspace and load the required packages/data.
 
@@ -23,14 +22,14 @@ fun_check_packages <- function(x){
     install.packages(x[i])}
     library(x[i],character.only=TRUE)}
 }
-packs = c('ggplot2', 'dplyr','tidyr','scales','knitr', 'readr', 'devtools', 'cowplot', 'LSD', 'viridis', 'hexbin')
+packs <- c('ggplot2', 'dplyr','tidyr','scales','knitr', 'readr', 'devtools', 'cowplot', 'LSD', 'viridis', 'hexbin')
 fun_check_packages(packs); rm(packs)
 
 #devtools::install_github("bvidgen/rBDA", force = T)
 library("rBDA")
 
 # load the data
-load('~/Dropbox/Vidgen-Yasseri/BDA/2019/bda_week3.RData')
+load('bda_week3.RData')
 ```
 
 # Bivariate Data
@@ -140,7 +139,7 @@ ggplot(mydata2,
               se = F) # remove the Standard Error for a cleaner visualization - but you might want them for your assignments
 
 # is this line a good fit?
-fit.bivariate = lm(y ~ x,
+fit.bivariate <- lm(y ~ x,
                    data = mydata2)
 summary(fit.bivariate) # very significant model overall, and both terms are significant
 summary(fit.bivariate)$r.squared # 0.47
@@ -157,11 +156,11 @@ When working with continuous data (as with most of the exercises in this class) 
 
 ```{r error_function_1}
 # Use the error_bars() function from the bvidgen/rBDA package:
-my.results = error_bars(mydata2, # first, create the error_bars.out object
+my.results <- error_bars(mydata2, # first, create the error_bars.out object
                        draw = 'both') # 'standard deviation', 'standard error'
 
 # NOTE: you need to pass the error_bars function a single dataframe - and it MUST be formatted as data.frame(x,y). If you have a dataframe with more variables then you need to make a new one to pass it to the error_bars() function. This is quite easy to do, e.g.:
-df.new = data.frame(x = mydata2$x,
+df.new <- data.frame(x = mydata2$x,
                     y = mydata2$y)
 rm(df.new)
 ```
@@ -172,7 +171,7 @@ We can now inspect the output created by the error_bars() function:
 my.results$plot # inspect the plot
 my.results$df.summary # inspect the df.summary with all of the summary variables (this can be used for further analysis)
 # you can also save this as a dataframe:
-df.summary = my.results$df.summary
+df.summary <- my.results$df.summary
 df.summary # Key variables to look at:
   # 'num' - showing the number of values in that bin
   # # ymean - the average y values in that bin
@@ -194,8 +193,8 @@ quantile(mydata2$x)
 range(mydata2$x) # 2 to 18 would cover the full range of data
 
 # We set s by looking at df$x. The values run from approximately 2 to 18. Therefore, if we had bins running from 4 to 18, and increasing by 2 every time our data would be well covered
-s = seq(4, 18, by = 2) # we start at 4 because this will cover all the values *up to* 4
-my.results2 = error_bars(mydata2, s)
+s <- seq(4, 18, by = 2) # we start at 4 because this will cover all the values *up to* 4
+my.results2 <- error_bars(mydata2, s)
 my.results2$plot # the data is split into 8 rather than 10 bins
 my.results2$df.summary # each of the bins are integer values
 my.results2$df
@@ -207,8 +206,8 @@ Sometimes, if the data is very messy, it is better to plot against the binned va
 
 ```{r error_bars_5}
 # extract the dataframes from the my.results object:
-df.summary = my.results$df.summary # the summary information for the bins, with all of the calculated variables
-df.extended = my.results$df # the original dataframe (mydata2) we passed to the function, with the bin values attached
+df.summary <- my.results$df.summary # the summary information for the bins, with all of the calculated variables
+df.extended <- my.results$df # the original dataframe (mydata2) we passed to the function, with the bin values attached
 
 # Plot
 # this is quite complicated R code but try work through it by running just a few lines of it at a time, iteratively expanding how much of the code you run so you understand what is happening
@@ -279,19 +278,16 @@ ggplot() +
 
 If you want to find out more about calculating error bars in R, then see this discussion on Stack Overflow, there are lots of parameters to adjust: http://stackoverflow.com/questions/13032777/scatter-plot-with-error-bars
 
-Finally (for this part at least....), the last thing we want to do is to fit a line to the*binned values*. There is no point making a great visualization which uses the binned rather than underlying values - and then calculating coefficient and intercept values for the underlying data. Put simply, we need to calculate the line fit (R squared) on the binned values (the dots in the middle of the error bars) - and not the underlying values (the data points in blue)
+Finally (for this part at least....), the last thing we want to do is to fit a line to the *binned values*. There is no point making a great visualization which uses the binned rather than underlying values - and then calculating coefficient and intercept values for the underlying data. Put simply, we need to calculate the line fit (R squared) on the binned values (the dots in the middle of the error bars) - and not the underlying values (the data points in blue)
 
 Thankfully, this is very easy to do using the df.summary object
 
 ```{r test}
-fit.test = lm(ymean ~ xmean, # take the mean values in each bin
+fit.test <- lm(ymean ~ xmean, # take the mean values in each bin
               data = df.summary) # use df.summary which we took from the 'myresults' object
 fit.test$coefficients # y-intercept is -2.33 and the xmean is 4.684. For a one unit increase in the mean value of x, there is a 4.68 increase in the mean value of y
 summary(fit.test)$r.squared # as expected, this is super high. R squared for binned values are always going to be impressive, so I wouldn't get too hung up about it when writing up your results (report it, but it doesn't mean as much as a high R squared on the underlying values)
 ```
-
-
-
 
 
 ## Model and graph bivariate data that has a curvilinear relationship
@@ -445,7 +441,7 @@ The key thing here is that the coefficient in the log regression model is a *sca
 Earlier, I promised to show you how to save an LSD heat scatter plot, which is frankly quite a frustrating endeavour as you cannot use any of the base R commands (this is a new development in the package following some not terribly helpful updates). You also cannot store the heatscatter plots as an object in the Environment. See below...
 
 ```{r save-heat-1}
-plot.heatscatter = LSD::heatscatter(mydata2$x,
+plot.heatscatter <- LSD::heatscatter(mydata2$x,
                                     mydata2$y, 
                                      cexplot = 0.2, 
                                      alpha = 99,
@@ -462,7 +458,7 @@ plot.heatscatter
 ## How to save an LSD heatscatter plot
 # First, make a function called 'plotsfkt' that contains your heatscatter plot - this is where you need to fix all of the params as you want them
   # e.g. sort out the title, the labels, cexplot, alpha, logarithmic axes (if needed) etc.
-plotsfkt = function(){LSD::heatscatter(mydata2$x,
+plotsfkt <- function(){LSD::heatscatter(mydata2$x,
                                     mydata2$y,
                                     cexplot = 0.2, 
                                     alpha = 99,
@@ -472,7 +468,7 @@ plotsfkt = function(){LSD::heatscatter(mydata2$x,
                                     method = 'pearson')}
 
 # Second, use the plotit() command to save your output. Read the comments from each line
-LSD::plotit(filename = '~/Dropbox/heatscatter',
+LSD::plotit(filename = 'heatscatter',
             sw = 1,
             sh = 1,
             sres = 1,
@@ -480,7 +476,7 @@ LSD::plotit(filename = '~/Dropbox/heatscatter',
             saveit = TRUE, 
             fileformat = "pdf")
 
-# If you have any problems email me at bertie.vidgen@oii.ox.ac.uk and I will help you troubleshoot.
+# If you have any problems email me at ulrik.lyngs@cs.ox.ac.uk and I will help you troubleshoot.
 ```
 
 *End of Workshop notes*
