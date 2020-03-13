@@ -276,7 +276,6 @@ ggplot() +
        title = 'y vs. x') +
   theme_minimal() # look at the documentation for more options to make the labelling look nicer
 
-
 ```
 
 If you want to find out more about calculating error bars in R, then see this discussion on Stack Overflow, there are lots of parameters to adjust: http://stackoverflow.com/questions/13032777/scatter-plot-with-error-bars
@@ -398,8 +397,12 @@ fit_log$coefficients #log10(x) is -0.48
   # This means that a 1% increase in x is associated with a 0.48% decrease in y - see below for more on interpreting this
   # this can be annotated to your plot
 
+```
 
-# Produce an annotated pretty looking log-log plot
+
+Produce an annotated pretty looking log-log plot:
+
+```{r}
 ggplot(mydata4,
        aes(x, y)) + 
   geom_point(size = 0.5) +
@@ -425,6 +428,8 @@ ggplot(mydata4,
            label = "R Squared = 0.79")
 ```
 
+
+
 Interpreting the output of a log regression is quite different to linear regression because the coefficients are percentages and not the actual units. In this example, a 1 *percent* increase in x is associated with a 0.48 *percent* decrease in y. This means that the relationship is (i) negative and (ii) scales sublinearly. If you increase x by 10% then y will decrease by a smaller amount (4.8%).
 
 If you want some advice on how to interpret the output of the log regression, there is a useful discussion on SO:
@@ -438,7 +443,7 @@ BUT! In many cases, relationships are *sublinear*. This is where the percentage 
 The key thing here is that the coefficient in the log regression model is a *scaling factor*. You need to know how to interpret this, and identify what it means when the x/y relationship scales sublinearly, superlinearly or just linearly (when the coefficient equals 1).
 
 
-### Finally, finally - saving an LSD heat scatter plot
+## Finally, finally - saving an LSD heat scatter plot
 Earlier, I promised to show you how to save an LSD heat scatter plot, which is frankly quite a frustrating endeavour as you cannot use any of the base R commands (this is a new development in the package following some not terribly helpful updates). You also cannot store the heatscatter plots as an object in the Environment. See below...
 
 ```{r save-heat-1}
