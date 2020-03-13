@@ -6,9 +6,10 @@ output: html_document
 ---
 
 # BDA Week 3 notes
-In the first half of the lecture we look at how to plot two variables together, using some extensions to a scatterplot. We then look at how to plot error bars, using the 'error_bars()' command from the 'rBDA' package. In the second half we look at how to model non-linear relationships in bivariate data, using LOESS curves and logarithms.
-
-This week is more technically demanding than the last two - if you have any issues, please shoot me an email at ulrik.lyngs@cs.ox.ac.uk.
+We look at
+- plotting two variables together, using some extensions to a scatterplot
+- how to plot error bars, using the 'error_bars()' command from the 'rBDA' package
+- how to model non-linear relationships in bivariate data, using LOESS curves and logarithms
 
 Set up the R workspace and load the required packages/data.
 
@@ -38,7 +39,7 @@ This week we are looking at bivariate data (i.e. where there is both an x and y)
 ```{r hist}
 # produce histograms of x and y
 mydata2 %>% 
-  gather() %>% #this stack the x and y columns on top of each other and adds a 'key' column that keep track of where it came from
+  gather() %>% #this stacks the x and y columns on top of each other and adds a 'key' column that keep track of where it came from
   ggplot(aes(value)) +
     geom_histogram() +
     facet_wrap(~key,
@@ -147,6 +148,7 @@ summary(fit_bivariate)$r.squared # you can grab the r-squared value like this
 
 ## Error bars and binned data analysis
 Error bars give us an idea of how much variability a variable has; they measure the dispersion of the data. They are an incredibly useful way of gaining additional insight. From term 1 statistics, you are probably somewhat familiar with a confidence interval, which quantifies how well a sample estimates a population parameter (and as such tells you about the statistical significance). 
+
 Two other error bars are (a) standard deviation (a measure of how spread out values are) and (b) standard error (a measure of how spread out the sampling distribution is). See this research note for some excellent chat about how these two are calculated and how they differ: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1255808/
 
 When working with continuous data (as with most of the exercises in this class) we need to bin variables to produce error bars. For 'df' we are going to bin 'x' as this is the independent variable. We make bins which are evenly spaced across the values of the x variable. We can then see how the values of y vary *within* each x bin, and use this to create error bars. This might sound a bit complicated but it should become clear once you see it in practice. Just remember that every y value will be assigned to one of the bins .
@@ -182,7 +184,9 @@ Two notes on the error_bars() function:
 
 First, you can adjust what values are graphed by adjusting the draw argument - it takes 'both' as default, but you can also stipulate to just draw 'standard deviation' or 'standard error. Try this in the code chunks above.
 
-Second, you can manually stipulate what bins you want to use. Now, you most likely won't need to worry about this, so feel free to skip on to the next code chunk. Anyway, for those of you who are #Nerds... If you don't stipulate the bins then the function automatically calculates values, setting the number of bins to 10. However, in some cases this won't be appropriate - Often the function creates fractions (i.e. in this case, each bin is equal to 1.6 of x), which may not be supported by the data (e.g. if x were edit counts on Wikipedia this might not make sense as you can't have 1.6 edits). You may also want fewer or more bins than 10. To get round this problem, pass the function the bins you want use by adjusting the values in 's'.
+Second, you can manually stipulate what bins you want to use. Now, you most likely won't need to worry about this, so feel free to skip on to the next code chunk. Anyway, for those of you who are #Nerds... If you don't stipulate the bins then the function automatically calculates values, setting the number of bins to 10. 
+
+However, in some cases this won't be appropriate - Often the function creates fractions (i.e. in this case, each bin is equal to 1.6 of x), which may not be supported by the data (e.g. if x were edit counts on Wikipedia this might not make sense as you can't have 1.6 edits). You may also want fewer or more bins than 10. To get round this problem, pass the function the bins you want use by adjusting the values in 's'.
 
 ```{r error_function_2, results = F}
 # we use exploratory analysis to decide what bins are appropriate, such as:
@@ -220,7 +224,7 @@ ggplot() +
              size = 1) +
   geom_point(data = df_summary, # each point shows a bin - with the mean x value and the mean y value
              aes(xmean, ymean),
-             size = 2) + 
+             size = 2) +
   geom_errorbar(data = df_summary,
                 aes(x = xmean,
                   ymin = ymean_minus_sd,
