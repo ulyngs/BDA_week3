@@ -301,7 +301,7 @@ summary(fit_test)$r.squared # as expected, this is super high. R squared for bin
 
 ## Model and graph bivariate data that has a curvilinear relationship
 ### Loess curve
-A useful tool for visually analysing data is the LOESS Curve (LOESS stands for LOcal regrESSion). LOESS curves smooth out data so that the general shape can be more easily observed.
+A useful tool for visually analysing data is the LOESS Curve (LOESS stands for LOcal regrESSion - this guy on youtube does a good job at explaining how it's generated: https://www.youtube.com/watch?v=Vf7oJ6z2LCc). LOESS curves smooth out data so that the general shape can be more easily observed.
 
 In the first plot, we can see a pattern but it is not totally clear. In the second plot the LOESS curve shows us the shape more clearly. Unfortunately, we can't directly interpret the LOESS curve as it is hard to express in mathematical terms - it is really just a diagnostic tool.
 
