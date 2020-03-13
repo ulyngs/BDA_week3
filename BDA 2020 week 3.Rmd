@@ -210,26 +210,22 @@ Now, back to the analysis...
 Sometimes, if the data is very messy, it is better to plot against the binned values. We can fit a line against these binned values and calculate the scaling factor. We can use the df.summary we created through the error_bars() function to do this.
 
 ```{r error_bars_5}
-# extract the dataframes from the my.results object:
-df_summary <- my_results$df.summary # the summary information for the bins, with all of the calculated variables
-df_extended <- my_results$df # the original dataframe (mydata2) we passed to the function, with the bin values attached
-
 # Plot
 # this is quite complicated R code but try work through it by running just a few lines of it at a time, iteratively expanding how much of the code you run so you understand what is happening
 ggplot() +
-  geom_point(data = df_extended, # put the original data on the plot - gives an idea also of how many values are in each bin
+  geom_point(data = my_results$df, # put the original data on the plot - gives an idea also of how many values are in each bin
              aes(x, y),
              color = 'blue',
              alpha = 0.02,
              size = 1) +
-  geom_point(data = df_summary, # each point shows a bin - with the mean x value and the mean y value
+  geom_point(data = my_results$df.summary, # each point shows a bin - with the mean x value and the mean y value
              aes(xmean, ymean),
              size = 2) +
-  geom_errorbar(data = df_summary,
+  geom_errorbar(data = my_results$df.summary,
                 aes(x = xmean,
                   ymin = ymean_minus_sd,
                     ymax = ymean_plus_sd, width = 0.75)) + # shows the dispersion in the data. You could change this to the standard error, rather than the standard deviation
-  geom_smooth(data = df_summary, 
+  geom_smooth(data = my_results$df.summary, 
              aes(xmean, ymean),
              color = 'red', 
               method = 'lm',
@@ -253,24 +249,24 @@ Note - I wouldn't recommend presenting this for your assignments or any publicat
 
 # Same plot but with the abline for both the original data and the binned values:
 ggplot() +
-  geom_point(data = df_extended, # put the original data on the plot - gives an idea also of how many values are in each bin
+  geom_point(data = my_results$df, # put the original data on the plot - gives an idea also of how many values are in each bin
              aes(x, y),
              color = 'blue',
              alpha = 0.02,
              size = 1) +
-  geom_point(data = df_summary, # each point shows a bin - with the mean x value and the mean y value
+  geom_point(data = my_results$df.summary, # each point shows a bin - with the mean x value and the mean y value
              aes(xmean, ymean),
              size = 2) + 
-  geom_errorbar(data = df_summary,
+  geom_errorbar(data = my_results$df.summary,
                 aes(x = xmean,
                   ymin = ymean_minus_sd,
                     ymax = ymean_plus_sd, width = 0.75)) + # shows the dispersion in the data. You could change this to the standard error, rather than the standard deviation
-  geom_smooth(data = df_summary, 
+  geom_smooth(data = my_results$df.summary, 
              aes(xmean, ymean),
              color = 'red', 
               method = 'lm',
               se = F) + # fit a line to the binned values
-  geom_smooth(data = mydata2,
+  geom_smooth(data = my_results$df,
               aes(x, y),
               color = 'pink',
               method = 'lm',
