@@ -151,7 +151,7 @@ Error bars give us an idea of how much variability a variable has; they measure 
 
 Two other error bars are (a) standard deviation (a measure of how spread out values are) and (b) standard error (a measure of how spread out the sampling distribution is). See this research note for some excellent chat about how these two are calculated and how they differ: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1255808/
 
-When working with continuous data (as with most of the exercises in this class) we need to bin variables to produce error bars. For 'df' we are going to bin 'x' as this is the independent variable. We make bins which are evenly spaced across the values of the x variable. We can then see how the values of y vary *within* each x bin, and use this to create error bars. This might sound a bit complicated but it should become clear once you see it in practice. Just remember that every y value will be assigned to one of the bins .
+When working with continuous data (as with most of the exercises in this class) we need to bin variables to produce error bars. For 'mydata2' we are going to bin 'x' as this is the independent variable. We make bins which are evenly spaced across the values of the x variable. We can then see how the values of y vary *within* each x bin, and use this to create error bars. This might sound a bit complicated but it should become clear once you see it in practice. Just remember that every y value will be assigned to one of the bins .
 
 ```{r error_function_1}
 # Use the error_bars() function from the bvidgen/rBDA package:
